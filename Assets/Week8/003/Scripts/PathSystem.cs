@@ -43,11 +43,20 @@ public class PathSystem : MonoBehaviour {
 
             int n = random.Next(100);
 
-            if (n.IsBetween(0, 49)) {
+            if (n.IsBetween(0, 25)) {
                 currentPosition = new Vector2(currentPosition.x + cellSize, currentPosition.y);
             }
-            else {
+            else if (n.IsBetween(26, 50))
+            {
                 currentPosition = new Vector2(currentPosition.x, currentPosition.y + cellSize);
+            }
+            else if (n.IsBetween(51, 74))
+            {
+                currentPosition = new Vector2(currentPosition.x - cellSize, currentPosition.y);
+            }
+            else if(n.IsBetween(75,100))
+            {
+                currentPosition = new Vector2(currentPosition.x, currentPosition.y - cellSize);
             }
 
             gridCellList.Add(new MyGridCell(currentPosition));
@@ -65,11 +74,20 @@ public class PathSystem : MonoBehaviour {
 
             int n = random.Next(100);
 
-            if (n.IsBetween(0, 49)) {
+            if (n.IsBetween(0, 25)) {
                 currentPosition = new Vector2(currentPosition.x + cellSize, currentPosition.y);
             }
-            else {
+            else if (n.IsBetween(26, 50))
+            {
                 currentPosition = new Vector2(currentPosition.x, currentPosition.y + cellSize);
+            }
+            else if (n.IsBetween(51, 74))
+            {
+                currentPosition = new Vector2(currentPosition.x - cellSize, currentPosition.y);
+            }
+            else if(n.IsBetween(75,100))
+            {
+                currentPosition = new Vector2(currentPosition.x, currentPosition.y - cellSize);
             }
 
             gridCellList.Add(new MyGridCell(currentPosition));
