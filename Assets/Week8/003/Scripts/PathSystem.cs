@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PathSystem : MonoBehaviour {
 
@@ -18,10 +19,16 @@ public class PathSystem : MonoBehaviour {
     public float cellSize = 1.0f;
 
     public Transform startLocation;
+    public float pauseTime = 1.0f;
+    public float buddySpeed = 1.0f;
+    public CircleBuddy buddy;
+     public int spawnCount = 10;
 
     // Start is called before the first frame update
     void Start() {
-
+      //  for(int i = 0; i < spawnCount; i++) {
+          //  Instantiate(buddy, GetRandomLocation(), Quaternion.identity);
+       // }
     }
 
     void SetSeed() {
@@ -95,6 +102,9 @@ public class PathSystem : MonoBehaviour {
         }
     }
 
+    //public Vector2 GetRandomLocation() {
+      //  return gridCellList[random.Next(gridCellList.Count)].location;
+   // }
 
 
     private void OnDrawGizmos() {
@@ -105,6 +115,8 @@ public class PathSystem : MonoBehaviour {
             Gizmos.DrawCube(gridCellList[i].location, Vector3.one * cellSize);
         }
     }
+
+
 
     // Update is called once per frame
     void Update() {
@@ -117,4 +129,6 @@ public class PathSystem : MonoBehaviour {
                 CreatePath();
         }
     }
+
+
 }
