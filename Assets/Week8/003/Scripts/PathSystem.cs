@@ -18,11 +18,15 @@ public class PathSystem : MonoBehaviour {
     [Range(1.0f, 10.0f)]
     public float cellSize = 1.0f;
 
+    public GameObject KeytoSpawn;
     public Transform startLocation;
-    public float pauseTime = 1.0f;
-    public float buddySpeed = 1.0f;
-    public CircleBuddy buddy;
-     public int spawnCount = 10;
+
+    public List<GameObject> keyList = new List<GameObject>(); 
+    
+    //public float pauseTime = 1.0f;
+    //public float buddySpeed = 1.0f;
+    //public CircleBuddy buddy;
+    //public int spawnCount = 10;
 
     // Start is called before the first frame update
     void Start() {
@@ -44,20 +48,28 @@ public class PathSystem : MonoBehaviour {
 
         gridCellList.Clear();
         Vector2 currentPosition = startLocation.transform.position;
-        gridCellList.Add(new MyGridCell(currentPosition));
+        MyGridCell cp = new MyGridCell(currentPosition);
+        gridCellList.Add(cp);
+
+        for (int i = 0; i<keyList.Count; i++){
+            Destroy(keyList[i]);
+
+        }
+
+        keyList.Clear();
 
         for (int i = 0; i < pathLength; i++) {
 
             int n = random.Next(100);
 
-            if (n.IsBetween(0, 25)) {
+            if (n.IsBetween(0, 30)) {
                 currentPosition = new Vector2(currentPosition.x + cellSize, currentPosition.y);
             }
-            else if (n.IsBetween(26, 50))
+            else if (n.IsBetween(31, 60))
             {
                 currentPosition = new Vector2(currentPosition.x, currentPosition.y + cellSize);
             }
-            else if (n.IsBetween(51, 74))
+            else if (n.IsBetween(61, 74))
             {
                 currentPosition = new Vector2(currentPosition.x - cellSize, currentPosition.y);
             }
@@ -68,7 +80,19 @@ public class PathSystem : MonoBehaviour {
 
             gridCellList.Add(new MyGridCell(currentPosition));
 
+            int y = random.Next(100);
+            if(y >= 0 && y <=98){
+            GameObject ky = Instantiate(KeytoSpawn, currentPosition, Quaternion.identity);
+            keyList.Add(ky);
+
+            }
+             else {
+
+            }
+
         }
+
+        
     }
 
     IEnumerator CreatePathRoutine() {
