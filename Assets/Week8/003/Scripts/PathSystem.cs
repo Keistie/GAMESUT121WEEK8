@@ -19,9 +19,15 @@ public class PathSystem : MonoBehaviour {
     public float cellSize = 1.0f;
 
     public GameObject KeytoSpawn;
+    public GameObject MonstertoSpawn;
+    public GameObject ButtontoSpawn;
     public Transform startLocation;
+    public GameObject Player;
 
     public List<GameObject> keyList = new List<GameObject>(); 
+    public List<GameObject> MonsterList = new List<GameObject>(); 
+    public List<GameObject> ButtonList = new List<GameObject>(); 
+    public List<GameObject> BlockList = new List<GameObject>();
     
     //public float pauseTime = 1.0f;
     //public float buddySpeed = 1.0f;
@@ -35,7 +41,7 @@ public class PathSystem : MonoBehaviour {
        // }
     }
 
-    void SetSeed() {
+    public void SetSeed() {
         if (seedType == SeedType.RANDOM) {
             random = new System.Random();
         }
@@ -44,7 +50,99 @@ public class PathSystem : MonoBehaviour {
         }
     }
 
-    void CreatePath() {
+    public void CreatePath() {
+
+        gridCellList.Clear();
+        Vector2 currentPosition = startLocation.transform.position;
+        MyGridCell cp = new MyGridCell(currentPosition);
+        gridCellList.Add(cp);
+
+        for (int i = 0; i < BlockList.Count; i++) {
+            Destroy(BlockList[i]);
+        }
+        BlockList.Clear();
+
+        GameObject bk = new GameObject("Starting Block");
+        bk.transform.position = currentPosition;
+        BlockList.Add(bk);
+
+        BoxCollider2D bcLeft = bk.AddComponent<BoxCollider2D>();
+        bcLeft.transform.position = new Vector3(bk.transform.position.x - (0.5f * cellSize), bcLeft.transform.position.y);
+        bcLeft.size = new Vector2(0.1f, cellSize);
+
+        Player.transform.position = currentPosition;
+
+        for (int i = 0; i<keyList.Count; i++){
+            Destroy(keyList[i]);
+        }
+        keyList.Clear();
+
+        for(int i = 0; i<MonsterList.Count; i++){
+            Destroy(MonsterList[i]);
+        }
+        MonsterList.Clear();
+
+        for(int i = 0; i<ButtonList.Count; i++){
+            Destroy(ButtonList[i]);
+        }
+       ButtonList.Clear();
+
+       for(int i = 0; i<BlockList.Count; i++){
+            Destroy(BlockList[i]);
+        }
+       BlockList.Clear();
+        
+
+        for (int i = 0; i < pathLength; i++) {
+
+            int n = random.Next(100);
+
+            if (n.IsBetween(0, 30)) {
+                currentPosition = new Vector2(currentPosition.x + cellSize, currentPosition.y);
+            }
+            else if (n.IsBetween(31, 60))
+            {
+                currentPosition = new Vector2(currentPosition.x, currentPosition.y + cellSize);
+            }
+            else if (n.IsBetween(61, 74))
+            {
+                currentPosition = new Vector2(currentPosition.x - cellSize, currentPosition.y);
+            }
+            else if(n.IsBetween(75,100))
+            {
+                currentPosition = new Vector2(currentPosition.x, currentPosition.y - cellSize);
+            }
+
+            gridCellList.Add(new MyGridCell(currentPosition));
+
+            GameObject bkTwo = new GameObject($"Block - {i}");
+            bkTwo.transform.position = currentPosition;
+            BlockList.Add(bkTwo);
+
+            int y = random.Next(100);
+            if(y >= 0 && y <=30){
+                GameObject ky = Instantiate(KeytoSpawn, currentPosition, Quaternion.identity);
+                keyList.Add(ky);
+
+            }
+            else if (y >=31 && y<= 60){
+                GameObject ms = Instantiate(MonstertoSpawn, currentPosition, Quaternion.identity);
+                MonsterList.Add(ms);
+            }
+            else if (y >= 61 && y <= 63){
+                GameObject bt = Instantiate(ButtontoSpawn, currentPosition, Quaternion.identity);
+                MonsterList.Add(bt);
+            }
+            else{
+
+            }
+
+        }
+
+        
+    }
+
+    IEnumerator CreatePathRoutine() {
 
         gridCellList.Clear();
         Vector2 currentPosition = startLocation.transform.position;
@@ -53,10 +151,13 @@ public class PathSystem : MonoBehaviour {
 
         for (int i = 0; i<keyList.Count; i++){
             Destroy(keyList[i]);
-
         }
-
         keyList.Clear();
+
+        for(int i = 0; i<MonsterList.Count; i++){
+            Destroy(MonsterList[i]);
+        }
+        MonsterList.Clear();
 
         for (int i = 0; i < pathLength; i++) {
 
@@ -81,47 +182,19 @@ public class PathSystem : MonoBehaviour {
             gridCellList.Add(new MyGridCell(currentPosition));
 
             int y = random.Next(100);
-            if(y >= 0 && y <=98){
+            if(y >= 0 && y <=30){
             GameObject ky = Instantiate(KeytoSpawn, currentPosition, Quaternion.identity);
             keyList.Add(ky);
 
             }
-             else {
-
+            else if (y >=31 && y<= 60){
+            GameObject ms = Instantiate(MonstertoSpawn, currentPosition, Quaternion.identity);
+            MonsterList.Add(ms);
             }
+            else{
 
-        }
+            };
 
-        
-    }
-
-    IEnumerator CreatePathRoutine() {
-
-        gridCellList.Clear();
-        Vector2 currentPosition = startLocation.transform.position;
-        gridCellList.Add(new MyGridCell(currentPosition));
-
-        for (int i = 0; i < pathLength; i++) {
-
-            int n = random.Next(100);
-
-            if (n.IsBetween(0, 25)) {
-                currentPosition = new Vector2(currentPosition.x + cellSize, currentPosition.y);
-            }
-            else if (n.IsBetween(26, 50))
-            {
-                currentPosition = new Vector2(currentPosition.x, currentPosition.y + cellSize);
-            }
-            else if (n.IsBetween(51, 74))
-            {
-                currentPosition = new Vector2(currentPosition.x - cellSize, currentPosition.y);
-            }
-            else if(n.IsBetween(75,100))
-            {
-                currentPosition = new Vector2(currentPosition.x, currentPosition.y - cellSize);
-            }
-
-            gridCellList.Add(new MyGridCell(currentPosition));
             yield return null;
         }
     }
@@ -151,6 +224,14 @@ public class PathSystem : MonoBehaviour {
                 StartCoroutine(CreatePathRoutine());
             else
                 CreatePath();
+        }
+        if(Input.GetKeyDown(KeyCode.C)) {
+            if (seedType == SeedType.RANDOM){
+                seedType = SeedType.CUSTOM;
+            }
+            else if(seedType == SeedType.CUSTOM){
+                seedType = SeedType.RANDOM;
+            }
         }
     }
 
